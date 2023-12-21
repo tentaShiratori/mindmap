@@ -1,0 +1,21 @@
+
+enum BackendType {
+    Local
+}
+struct Backend {
+    id: string, // format: uuid 
+    name: string,
+    type: BackendType,
+}
+
+struct BackendDraft {
+    name: string,
+    type: BackendType,
+}
+
+export global BackendRepository {
+    property <int> name;
+    pure callback add(BackendDraft)->bool;
+    pure callback getAll()-> [Backend];
+    pure callback get(string /** Backend.id */)->{err:bool, result: Backend};
+}
