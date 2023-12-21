@@ -1,21 +1,21 @@
 
-enum BackendType {
+export enum BackendType {
     Local
 }
-struct Backend {
+export struct Backend {
     id: string, // format: uuid 
     name: string,
     type: BackendType,
 }
 
-struct BackendDraft {
+export struct BackendDraft {
     name: string,
     type: BackendType,
 }
 
 export global BackendRepository {
     property <int> name;
-    pure callback add(BackendDraft)->bool;
+    pure callback add(BackendDraft)->{err: bool, result: string /** Backend.id */};
     pure callback getAll()-> [Backend];
     pure callback get(string /** Backend.id */)->{err:bool, result: Backend};
 }

@@ -1,19 +1,14 @@
-import { Button, VerticalBox } from "std-widgets.slint";
 import { Taskbar } from "taskbar/taskbar.slint";
+import { BackendManager } from "pages/home/backend-manager.slint";
+import { HorizontalBox , VerticalBox} from "std-widgets.slint";
+import {Log} from "singletons/log.slint";
+
+export {Log}
 
 export component AppWindow inherits Window {
-    in-out property<int> counter: 42;
-    callback request-increase-value();
-    VerticalBox {
+    VerticalLayout {
+        alignment: start;
         Taskbar {}
-        Text {
-            text: "Counter: \{root.counter}";
-        }
-        Button {
-            text: "Increase value";
-            clicked => {
-                root.request-increase-value();
-            }
-        }
+        BackendManager {}
     }
 }

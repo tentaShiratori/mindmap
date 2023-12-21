@@ -5,6 +5,6 @@ struct Local {
 
 export global LocalBackendRepository {
     property <int> name;
-    pure callback edit(Local);
+    pure callback edit(Local)->bool;
     pure callback get(string /** backend_id */)->{err:bool,result:Local};
 }
