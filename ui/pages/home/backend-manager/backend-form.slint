@@ -1,14 +1,13 @@
 
 import { LineEdit , ComboBox, HorizontalBox, GroupBox, VerticalBox, Button, GridBox} from "std-widgets.slint";
-import {BackendRepository,BackendDraft,BackendType} from "../../../singletons/backend-repository.slint";
-import {LocalBackendRepository} from "../../../singletons/local-backend-repository.slint";
+import {BackendRepository,BackendDraft,BackendType} from "../../../singletons/backend_repository.slint";
+import {LocalBackendRepository} from "../../../singletons/local_backend_repository.slint";
 
 export component BackendForm {
     property <string> name <=> nameElm.text;
     property <string> type <=> typeElm.current-value; 
     property <string> path <=> pathElm.text; 
     property <string> errorText;
-    property <length> font_size: 10px;
 
     property <{err:bool, result: string}> backendAddResult;
     
@@ -29,6 +28,7 @@ export component BackendForm {
             if(backendAddResult.err){
                 errorText = "Any errors occured."
             }
+            debug(backendAddResult.result);
             if(!LocalBackendRepository.edit({backend_id: backendAddResult.result, path: path})){
                 errorText = "Any errors occured.";
             }
@@ -37,17 +37,11 @@ export component BackendForm {
         clearHandleSubmitVariables();
     }
     VerticalBox {
-        TouchArea {
-            scroll-event => {
-                font_size = font_size - 0.1px;
-                accept
-            }
         HorizontalBox {
             alignment: start;
             GroupBox {
                 title: "Name";
                 nameElm := TextInput {
-                    font-size: font_size;
                     single-line: false;
                     accepted() => {debug("Enter");}
                 }
@@ -76,6 +70,4 @@ export component BackendForm {
             }
         }
     }
-    }
-    Text {}
 }

@@ -1,9 +1,10 @@
 import { Taskbar } from "taskbar/taskbar.slint";
 import { BackendManager } from "pages/home/backend-manager.slint";
 import { HorizontalBox , VerticalBox} from "std-widgets.slint";
-import {Log} from "singletons/log.slint";
+import {BackendRepository,BackendDraft} from "singletons/backend_repository.slint";
+import {LocalBackendRepository} from "singletons/local_backend_repository.slint";
 
-export {Log}
+export {BackendRepository,BackendDraft, LocalBackendRepository}
 
 export component AppWindow inherits Window {
     VerticalLayout {
