@@ -1,3 +1,4 @@
+import {Error} from "../lib/error.slint";
 
 export enum BackendType {
     Local
@@ -15,7 +16,7 @@ export struct BackendDraft {
 
 export global BackendRepository {
     property <int> name;
-    pure callback add(BackendDraft)->{err: bool, result: string /** Backend.id */};
+    pure callback add(BackendDraft)->{err: Error, result: string /** Backend.id */};
     pure callback getAll()-> [Backend];
-    pure callback get(string /** Backend.id */)->{err:bool, result: Backend};
+    pure callback get(string /** Backend.id */)->{err: Error, result: Backend};
 }

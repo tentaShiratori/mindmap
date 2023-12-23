@@ -2,6 +2,8 @@
 import { LineEdit , ComboBox, HorizontalBox, GroupBox, VerticalBox, Button, GridBox} from "std-widgets.slint";
 import {BackendRepository,BackendDraft,BackendType} from "../../../singletons/backend_repository.slint";
 import {LocalBackendRepository} from "../../../singletons/local_backend_repository.slint";
+import {PathLib} from "../../../singletons/path_lib.slint";
+import {Error} from "../../../lib/error.slint";
 
 export component BackendForm {
     property <string> name <=> nameElm.text;
@@ -9,10 +11,12 @@ export component BackendForm {
     property <string> path <=> pathElm.text; 
     property <string> errorText;
 
-    property <{err:bool, result: string}> backendAddResult;
+    property <{err:Error, result: string}> backend-add-result;
+    property <Error> local-backend-edit-result;
     
     function clearHandleSubmitVariables() {
-        backendAddResult = {err:true, result:""};
+        backend-add-result = {err: {did_occured:false, message:""}, result:""};
+        local-backend-edit-result = {did_occured:false, message:""};
     }
 
     init => {
@@ -21,16 +25,16 @@ export component BackendForm {
 
     function handleSubmit(){
         if(type=="Local"){
-            backendAddResult = BackendRepository.add({
+            backend-add-result = BackendRepository.add({
                 name: name,
                 type: BackendType.Local
             });
-            if(backendAddResult.err){
-                errorText = "Any errors occured."
+            if(backend-add-result.err.did-occured){
+                errorText = "backend repository error:" + backend-add-result.err.message;
             }
-            debug(backendAddResult.result);
-            if(!LocalBackendRepository.edit({backend_id: backendAddResult.result, path: path})){
-                errorText = "Any errors occured.";
+            local-backend-edit-result = LocalBackendRepository.edit({backend_id: backend-add-result.result, path: path});
+            if(local-backend-edit-result.did-occured){
+                errorText = "local backend repository error:" + local-backend-edit-result.message;
             }
         }
 
@@ -56,7 +60,9 @@ export component BackendForm {
         HorizontalBox {
             GroupBox {
                 title: "Path";
-                pathElm := LineEdit {}
+                pathElm := LineEdit {
+                    text: PathLib.home-dir;
+                }
             }
         }
         if errorText != "": HorizontalBox{

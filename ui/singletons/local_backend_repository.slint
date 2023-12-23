@@ -1,3 +1,4 @@
+import {Error} from "../lib/error.slint";
 struct Local {
     backend_id: string, /** format: uuid */
     path: string,
@@ -5,6 +6,6 @@ struct Local {
 
 export global LocalBackendRepository {
     property <int> name;
-    pure callback edit(Local)->bool;
-    pure callback get(string /** backend_id */)->{err:bool,result:Local};
+    pure callback edit(Local)->Error;
+    pure callback get(string /** backend_id */)->{err:Error,result:Local};
 }
