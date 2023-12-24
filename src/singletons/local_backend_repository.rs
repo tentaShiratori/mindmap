@@ -1,4 +1,5 @@
-use crate::lib::repository_json::RepositoryJSON;
+use crate::dao::json::JsonDao;
+use crate::extends::ui::Return;
 use crate::{
     lib::*,
     model::local_backend::*,
@@ -7,37 +8,39 @@ use crate::{
 };
 use anyhow::Result;
 use slint::*;
-use std::path;
 
-struct LocalBackendRepository {
-    local_backend_file_path: path::PathBuf,
+use super::dao::Dao;
+
+struct LocalBackendRepository<T>
+where
+    T: Dao<Vec<LocalBackend>>,
+{
+    dao: T,
 }
 
-impl repository_json::RepositoryJSON<Vec<LocalBackend>> for LocalBackendRepository {
-    fn default_data(&self) -> Vec<LocalBackend> {
-        vec![]
-    }
-    fn json_path(&self) -> &path::Path {
-        self.local_backend_file_path.as_path()
-    }
-}
-
-impl LocalBackendRepository {
-    fn new() -> LocalBackendRepository {
-        let local_backend_file_path = dir::Dir::new().data().join("local_backend.json");
-        LocalBackendRepository {
-            local_backend_file_path,
-        }
+impl<T> LocalBackendRepository<T>
+where
+    T: Dao<Vec<LocalBackend>>,
+{
+    fn new(dao: T) -> LocalBackendRepository<T> {
+        LocalBackendRepository { dao: dao }
     }
 
     fn edit(&self, local: Local) -> Result<()> {
-        let mut data = self.load()?;
+        let mut data = self.dao.load()?;
         data.push(LocalBackend {
             backend_id: local.backend_id.to_string(),
             path: local.path.to_string(),
         });
-        self.save(&data)?;
+        self.dao.save(&data)?;
         Ok(())
+    }
+}
+
+fn json_dao() -> JsonDao<Vec<LocalBackend>> {
+    JsonDao {
+        path: dir::Dir::new().data().join("local_backend.json"),
+        default_data: vec![],
     }
 }
 
@@ -45,18 +48,9 @@ pub fn setup(window: &AppWindow) {
     window
         .global::<ui::LocalBackendRepository>()
         .on_edit(|local| {
-            let local_backend_repository = LocalBackendRepository::new();
+            let local_backend_repository = LocalBackendRepository::new(json_dao());
             let result = local_backend_repository.edit(local);
 
-            match result {
-                Ok(_) => ui::Error {
-                    did_occured: false,
-                    message: "".into(),
-                },
-                Err(err) => ui::Error {
-                    did_occured: true,
-                    message: err.to_string().into(),
-                },
-            }
+            Return::from(result).into_error()
         });
 }

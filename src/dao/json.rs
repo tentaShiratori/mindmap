@@ -1,19 +1,24 @@
+use crate::singletons::dao::Dao;
 use anyhow::Result;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 use std::fs::OpenOptions;
 use std::io::{prelude::*, SeekFrom};
-use std::{fs, fs::File, path::Path};
+use std::path::PathBuf;
+use std::{fs, fs::File};
 
-pub trait RepositoryJSON<T>
+pub struct JsonDao<T> {
+    pub path: PathBuf,
+    pub default_data: T,
+}
+
+impl<T> JsonDao<T>
 where
     T: Serialize,
     T: DeserializeOwned,
 {
-    fn json_path(&self) -> &Path;
-    fn default_data(&self) -> T;
     fn open_file(&self) -> Result<File> {
-        let path = self.json_path();
+        let path = self.path.as_path();
         let parent = path.parent().unwrap();
         if !parent.exists() {
             fs::create_dir_all(path.parent().unwrap())?;
@@ -25,12 +30,18 @@ where
             .open(path)?;
         let metadata = file.metadata()?;
         if metadata.len() == 0 {
-            file.write_all(&serde_json::to_string(&self.default_data())?.into_bytes())?;
+            file.write_all(&serde_json::to_string(&self.default_data)?.into_bytes())?;
         }
         file.seek(SeekFrom::Start(0))?;
         Ok(file)
     }
+}
 
+impl<T> Dao<T> for JsonDao<T>
+where
+    T: Serialize,
+    T: DeserializeOwned,
+{
     fn load(&self) -> Result<T>
     where
         T: DeserializeOwned,
