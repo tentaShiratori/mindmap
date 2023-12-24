@@ -1,7 +1,7 @@
-use crate::dao::json::JsonDao;
+use crate::app_module::AppModule;
+
 use crate::extends::ui::Return;
 use crate::{
-    lib::*,
     model::local_backend::*,
     ui,
     ui::{AppWindow, Local},
@@ -11,7 +11,7 @@ use slint::*;
 
 use super::dao::Dao;
 
-struct LocalBackendRepository<T>
+pub struct LocalBackendRepository<T>
 where
     T: Dao<Vec<LocalBackend>>,
 {
@@ -22,7 +22,7 @@ impl<T> LocalBackendRepository<T>
 where
     T: Dao<Vec<LocalBackend>>,
 {
-    fn new(dao: T) -> LocalBackendRepository<T> {
+    pub fn new(dao: T) -> LocalBackendRepository<T> {
         LocalBackendRepository { dao: dao }
     }
 
@@ -37,19 +37,11 @@ where
     }
 }
 
-fn json_dao() -> JsonDao<Vec<LocalBackend>> {
-    JsonDao {
-        path: dir::Dir::new().data().join("local_backend.json"),
-        default_data: vec![],
-    }
-}
-
-pub fn setup(window: &AppWindow) {
+pub fn setup(window: &AppWindow, module: &'static AppModule) {
     window
         .global::<ui::LocalBackendRepository>()
         .on_edit(|local| {
-            let local_backend_repository = LocalBackendRepository::new(json_dao());
-            let result = local_backend_repository.edit(local);
+            let result = module.local_backend_repository.edit(local);
 
             Return::from(result).into_error()
         });

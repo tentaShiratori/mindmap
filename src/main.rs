@@ -18,20 +18,27 @@ mod lib {
     pub mod dir;
 }
 mod dao {
-    pub mod json;
+    pub mod backend_json_dao;
+    pub mod json_dao;
+    pub mod local_backend_json_dao;
 }
 mod model {
     pub mod backend;
     pub mod local_backend;
 }
 
+mod app_module;
+
+use app_module::AppModule;
 use singletons::*;
 use ui::*;
 
 fn main() -> Result<(), slint::PlatformError> {
     let ui = AppWindow::new()?;
-    backend_repository::setup(&ui);
-    local_backend_repository::setup(&ui);
-    path_lib::setup(&ui);
+    let module: &'static AppModule = Box::leak(Box::new(AppModule::new()));
+
+    backend_repository::setup(&ui, module);
+    local_backend_repository::setup(&ui, module);
+    path_lib::setup(&ui, module);
     ui.run()
 }

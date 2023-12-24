@@ -1,7 +1,7 @@
-use crate::dao::json::JsonDao;
+use crate::app_module::AppModule;
+
 use crate::extends::ui::Return;
 use crate::{
-    lib::*,
     model::backend::*,
     ui,
     ui::{AppWindow, BackendDraft},
@@ -13,7 +13,7 @@ use uuid::Uuid;
 
 use super::dao::Dao;
 
-struct BackendRepository<T>
+pub struct BackendRepository<T>
 where
     T: Dao<Vec<Backend>>,
 {
@@ -34,7 +34,7 @@ impl<T> BackendRepository<T>
 where
     T: Dao<Vec<Backend>>,
 {
-    fn new(dao: T) -> BackendRepository<T> {
+    pub fn new(dao: T) -> BackendRepository<T> {
         BackendRepository { dao: dao }
     }
 
@@ -60,23 +60,11 @@ where
     }
 }
 
-fn json_dao() -> JsonDao<Vec<Backend>> {
-    JsonDao {
-        path: dir::Dir::new().data().join("backend.json"),
-        default_data: vec![],
-    }
-}
-
-pub fn setup(window: &AppWindow) {
+pub fn setup(window: &AppWindow, module: &'static AppModule) {
     let repository = window.global::<ui::BackendRepository>();
     repository.on_add(|draft| {
-        let result = BackendRepository::new(json_dao()).add(draft);
+        let result = module.backend_repository.add(draft);
         Return::from(result).into_tuple().into()
     });
-    repository.on_getAll(|| {
-        BackendRepository::new(json_dao())
-            .get_all()
-            .as_slice()
-            .into()
-    })
+    repository.on_getAll(|| module.backend_repository.get_all().as_slice().into())
 }
