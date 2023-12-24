@@ -4,6 +4,7 @@ import {BackendRepository,BackendDraft,BackendType} from "../../../singletons/ba
 import {LocalBackendRepository} from "../../../singletons/local_backend_repository.slint";
 import {PathLib} from "../../../singletons/path_lib.slint";
 import {Error} from "../../../lib/error.slint";
+import {BackendManagerAdapter,BackendPages} from "../backend-manager-adapter.slint";
 
 export component BackendForm {
     property <string> name <=> nameElm.text;
@@ -39,6 +40,7 @@ export component BackendForm {
         }
 
         clearHandleSubmitVariables();
+        BackendManagerAdapter.page = BackendPages.List;
     }
     VerticalBox {
         HorizontalBox {

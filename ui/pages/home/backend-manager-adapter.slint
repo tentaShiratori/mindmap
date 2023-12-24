@@ -1,0 +1,9 @@
+export enum BackendPages{
+    Add,
+    Edit,
+    List
+}
+
+export global BackendManagerAdapter{
+    in property <BackendPages> page: BackendPages.List;
+}

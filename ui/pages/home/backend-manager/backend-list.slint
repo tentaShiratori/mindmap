@@ -1,0 +1,40 @@
+
+
+import { StandardListView , Button, ListView} from "std-widgets.slint";
+import {BackendManagerAdapter,BackendPages} from "../backend-manager-adapter.slint";
+
+export component BackendList {
+
+    VerticalLayout {
+        spacing: 20px;
+        HorizontalLayout {
+            alignment: end;
+            Button {
+                text: "add";
+                clicked => {BackendManagerAdapter.page = BackendPages.Add;}
+            }
+        }
+        ListView {
+            width: 300px;
+            height: 200px;
+            for data in [ { text: "Blue"}, { text: "Red" }, { text: "Green" },
+                { text: "Yellow" }, { text: "Black"}, { text: "White"},
+                { text: "Magenta" }, { text: "Cyan" },
+            ] : HorizontalLayout{
+                alignment: space-between;
+                Text{
+                    text: data.text;
+                }
+                HorizontalLayout {
+                    spacing: 10px;
+                    Button {
+                        text:"  edit  ";
+                    }
+                    Button{
+                        text:"delete";
+                    }
+                }
+            }
+        }
+    }
+}
