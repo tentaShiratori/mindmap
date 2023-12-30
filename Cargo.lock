@@ -2415,6 +2415,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "directories",
+ "rand",
  "serde",
  "serde_json",
  "slint",

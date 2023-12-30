@@ -1,4 +1,4 @@
-#![windows_subsystem = "windows"]
+#![cfg_attr(not(test), windows_subsystem = "windows")]
 
 mod extends {
     pub mod ui;
@@ -41,4 +41,9 @@ fn main() -> Result<(), slint::PlatformError> {
     local_backend_repository::setup(&ui, module);
     path_lib::setup(&ui, module);
     ui.run()
+}
+
+#[cfg(test)]
+pub mod test {
+    pub mod mock_file;
 }
