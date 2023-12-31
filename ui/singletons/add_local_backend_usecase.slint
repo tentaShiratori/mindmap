@@ -1,0 +1,10 @@
+import {Error} from "../lib/error.slint";
+
+export struct AddLocalBackendArgs {
+    name: string,
+    path: string,
+}
+
+export global AddLocalBackendUsecase {
+    pure callback exec(AddLocalBackendArgs)->Error;
+}

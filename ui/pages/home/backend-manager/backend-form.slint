@@ -1,7 +1,6 @@
 
 import { LineEdit , ComboBox, HorizontalBox, GroupBox, VerticalBox, Button, GridBox} from "std-widgets.slint";
-import {BackendRepository,BackendDraft,BackendType} from "../../../singletons/backend_repository.slint";
-import {LocalBackendRepository} from "../../../singletons/local_backend_repository.slint";
+import {AddLocalBackendUsecase} from "../../../singletons/add_local_backend_usecase.slint";
 import {PathLib} from "../../../singletons/path_lib.slint";
 import {Error} from "../../../lib/error.slint";
 import {BackendManagerAdapter,BackendPages} from "../backend-manager-adapter.slint";
@@ -12,12 +11,10 @@ export component BackendForm {
     property <string> path <=> pathElm.text; 
     property <string> errorText;
 
-    property <{err:Error, result: string}> backend-add-result;
-    property <Error> local-backend-edit-result;
+    property <Error> add-local-backend-output;
     
     function clearHandleSubmitVariables() {
-        backend-add-result = {err: {did_occured:false, message:""}, result:""};
-        local-backend-edit-result = {did_occured:false, message:""};
+        add-local-backend-output = {did_occured:false, message:""};
     }
 
     init => {
@@ -26,16 +23,13 @@ export component BackendForm {
 
     function handleSubmit(){
         if(type=="Local"){
-            backend-add-result = BackendRepository.add({
+            add-local-backend-output = AddLocalBackendUsecase.exec({
                 name: name,
-                type: BackendType.Local
+                path: path
             });
-            if(backend-add-result.err.did-occured){
-                errorText = "backend repository error:" + backend-add-result.err.message;
-            }
-            local-backend-edit-result = LocalBackendRepository.edit({backend_id: backend-add-result.result, path: path});
-            if(local-backend-edit-result.did-occured){
-                errorText = "local backend repository error:" + local-backend-edit-result.message;
+            if(add-local-backend-output.did-occured){
+                errorText = "local backend repository error:" + add-local-backend-output.message;
+                return;
             }
         }
 

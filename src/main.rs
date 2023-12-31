@@ -8,9 +8,8 @@ mod ui {
     slint::include_modules!();
 }
 mod singletons {
-    pub mod backend_repository;
+    pub mod add_local_backend_usecase;
     pub mod dao;
-    pub mod local_backend_repository;
     pub mod path_lib;
 }
 
@@ -37,8 +36,7 @@ fn main() -> Result<(), slint::PlatformError> {
     let ui = AppWindow::new()?;
     let module: &'static AppModule = Box::leak(Box::new(AppModule::new()));
 
-    backend_repository::setup(&ui, module);
-    local_backend_repository::setup(&ui, module);
+    add_local_backend_usecase::setup(&ui, module);
     path_lib::setup(&ui, module);
     ui.run()
 }

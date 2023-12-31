@@ -1,12 +1,13 @@
 import { Taskbar } from "taskbar/taskbar.slint";
 import { BackendManager } from "pages/home/backend-manager.slint";
 import { HorizontalBox , VerticalBox} from "std-widgets.slint";
-import {BackendRepository,BackendDraft} from "singletons/backend_repository.slint";
-import {LocalBackendRepository} from "singletons/local_backend_repository.slint";
+import {AddLocalBackendUsecase,AddLocalBackendArgs} from "singletons/add_local_backend_usecase.slint";
 import {PathLib} from "singletons/path_lib.slint";
 import {Error} from "lib/error.slint";
+import {Backend} from "models/backend.slint";
+import {LocalBackend} from "models/local_backend.slint";
 
-export {BackendRepository,BackendDraft, LocalBackendRepository,PathLib,Error}
+export {AddLocalBackendUsecase,AddLocalBackendArgs,Backend, LocalBackend,PathLib,Error}
 
 export component AppWindow inherits Window {
     VerticalLayout {
