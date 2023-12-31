@@ -1,7 +1,7 @@
 use crate::app_module::AppModule;
 
 use crate::extends::ui::Return;
-use crate::model::local_backend::LocalBackend;
+use crate::model::local_backend::{LocalBackend, LocalBackendBackendId, LocalBackendPath};
 use crate::{model::backend::*, ui, ui::AppWindow};
 use anyhow::Result;
 use slint::*;
@@ -35,16 +35,16 @@ where
         let id = Uuid::new_v4();
         let mut data = self.backend_dao.load()?;
         data.push(Backend {
-            id: id.to_string(),
-            name: args.name.to_string(),
-            r#type: ui::BackendType::Local,
+            id: BackendId(id.to_string()),
+            name: BackendName(args.name.to_string()),
+            r#type: BackendType(ui::BackendType::Local),
         });
         self.backend_dao.save(&data)?;
 
         let mut data = self.local_backend_dao.load()?;
         data.push(LocalBackend {
-            backend_id: id.to_string(),
-            path: args.path.to_string(),
+            backend_id: LocalBackendBackendId(id.to_string()),
+            path: LocalBackendPath(args.path.to_string()),
         });
         self.local_backend_dao.save(&data)?;
 
