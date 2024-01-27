@@ -36,6 +36,7 @@ impl AddLocalBackendUsecase for AddLocalBackendUsecaseImpl {
             name: BackendName(args.name),
             r#type: BackendType::Local,
         });
+
         self.backend_dao.save(&data)?;
 
         let mut data = self.local_backend_dao.load()?;

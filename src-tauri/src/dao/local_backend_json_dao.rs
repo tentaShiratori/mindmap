@@ -1,5 +1,4 @@
 use crate::{
-    lib::dir::Dir,
     model::{local_backend::LocalBackend, local_backend_repository::LocalBackendRepository},
     singletons::dao::Dao,
 };
@@ -12,10 +11,6 @@ use shaku::Component;
 #[shaku(interface = LocalBackendRepository)]
 
 pub struct LocalBackendJsonDao {
-    #[shaku(default = JsonDao {
-        path: Dir::new().data().join("local_backend.json"),
-        default_data: vec![],
-    })]
     json_dao: JsonDao<Vec<LocalBackend>>,
 }
 

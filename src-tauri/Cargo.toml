@@ -16,12 +16,12 @@ tauri-build = { version = "1.5", features = [] }
 tauri = { version = "1.5", features = ["shell-open"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-directories = "5.0.1"
 uuid = { version = "1.6.1", features = ["v4", "fast-rng", "macro-diagnostics"] }
 anyhow = "1.0.76"
 specta = "=2.0.0-rc.7"
 tauri-specta = { version = "=2.0.0-rc.4", features = ["typescript"] }
 shaku = "0.6.1"
+thiserror = "1.0.56"
 
 [dev-dependencies]
 rand = "0.8.5"
