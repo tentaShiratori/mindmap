@@ -1,7 +1,7 @@
 import { useState } from "react";
 import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/tauri";
 import "./App.css";
+import { commands } from "./bindings";
 
 function App() {
   const [greetMsg, setGreetMsg] = useState("");
@@ -9,7 +9,12 @@ function App() {
 
   async function greet() {
     // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-    setGreetMsg(await invoke("greet", { name }));
+    const res = await commands.addLocalBackendUsecase(name);
+    if (res.status == "ok") {
+      setGreetMsg(res.data);
+    } else {
+      setGreetMsg(res.error);
+    }
   }
 
   return (

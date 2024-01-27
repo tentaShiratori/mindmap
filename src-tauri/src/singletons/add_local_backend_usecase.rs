@@ -1,38 +1,33 @@
 use crate::model::backend::*;
+use crate::model::backend_repository::BackendRepository;
 use crate::model::local_backend::{LocalBackend, LocalBackendBackendId, LocalBackendPath};
+use crate::model::local_backend_repository::LocalBackendRepository;
 use anyhow::Result;
 
 use uuid::Uuid;
 
-use super::dao::Dao;
-
-pub struct AddLocalBackendUsecase<T, U>
-where
-    T: Dao<Vec<Backend>>,
-    U: Dao<Vec<LocalBackend>>,
-{
-    backend_dao: T,
-    local_backend_dao: U,
-}
+use shaku::{Component, Interface};
+use std::sync::Arc;
 
 pub struct AddLocalBackendArgs {
-    id: String,
-    name: String,
-    path: String,
+    pub name: String,
+    pub path: String,
 }
 
-impl<T, U> AddLocalBackendUsecase<T, U>
-where
-    T: Dao<Vec<Backend>>,
-    U: Dao<Vec<LocalBackend>>,
-{
-    pub fn new(backend_dao: T, local_backend_dao: U) -> AddLocalBackendUsecase<T, U> {
-        AddLocalBackendUsecase {
-            backend_dao: backend_dao,
-            local_backend_dao: local_backend_dao,
-        }
-    }
+pub trait AddLocalBackendUsecase: Interface {
+    fn exec(&self, args: AddLocalBackendArgs) -> Result<String>;
+}
 
+#[derive(Component)]
+#[shaku(interface = AddLocalBackendUsecase)]
+pub struct AddLocalBackendUsecaseImpl {
+    #[shaku(inject)]
+    backend_dao: Arc<dyn BackendRepository>,
+    #[shaku(inject)]
+    local_backend_dao: Arc<dyn LocalBackendRepository>,
+}
+
+impl AddLocalBackendUsecase for AddLocalBackendUsecaseImpl {
     fn exec(&self, args: AddLocalBackendArgs) -> Result<String> {
         let id = Uuid::new_v4();
         let mut data = self.backend_dao.load()?;
